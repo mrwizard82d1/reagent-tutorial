@@ -13,7 +13,13 @@
   [:p (:text @app-state)])
 
 (reagent/render-component [hello-world]
-                          (. js/document (getElementById "app")))
+                          (. js/document (getElementById "app0")))
+
+(defn alt-hello-world []
+  [:h1 (:text @app-state)])
+
+(reagent/render-component [alt-hello-world]
+                          (. js/document (getElementById "app1")))
 
 
 (defn on-js-reload []
