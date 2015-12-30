@@ -7,33 +7,33 @@
 
 ;; define your app data so that it doesn't get over-written on reload
 
-(defonce app-state (atom {:list ["Lion" "Zebra" "Buffalo" "Antelope"]}))
+(defonce app-state
+  (atom
+   {:contacts 
+    [{:first "Ben" :last "Bitdiddle" :email "benb@mit.edu"}
+     {:first "Alyssa" :middle-initial "P" :last "Hacker" :email "aphacker@mit.edu"}
+     {:first "Eval" :middle "Lu" :last "Ator" :email "eval@mit.edu"}
+     {:first "Louis" :last "Reasoner" :email "prolog@mit.edu"}
+     {:first "Cy" :middle-initial "D" :last "Effect" :email "bugs@mit.edu"}
+     {:first "Lem" :middle-initial "E" :last "Tweakit" :email "morebugs@mit.edu"}]}))
 
-(defn stripe [text background-color]
-  [:li {:style {:backgroundColor background-color}} text])
 
-(defn hello-world []
-  ;; The following code works; however, it generates a warning in the developer console:
-  ;;     Every element in a seq should have a unique :key
-  ;; This warning results from React expecting each element in the virtual DOM to have a unique key so that it can more
-  ;; effectively determine changes to elements. My guess is that the Om library takes care of this issue for me.
-  ;;
-  ;; For more information, see the post on StackOverflow,
-  ;; http://stackoverflow.com/questions/33446913/reagent-react-clojurescript-warning-every-element-in-a-seq-should-have-a-unique  
-  ;; 
-  #_[:ul (map #(vector :li %) (:list @app-state))]
-  ;; 
-  ;; To resolve this warning, the aforementioned post suggested adding meta data to each element in the list. The metadata is
-  ;; a map between the symbol :key and a unique item (the list item if it is unique; other suggestions were using `gen-key`
-  ;; or using a UUID generator).
-  ;; 
-  [:ul
-   {:className "animals"}
-   (map #(with-meta (stripe %1 %2) {:key %1}) (:list @app-state) (cycle ["#ff0" "#fff"]))]
-  )
+(defn middle-name [contact]
+  (cond 
+    (:middle contact) (:middle contact)
+    (:middle-initial contact) (str (:middle-initial contact) ".")))
 
-(reagent/render-component [hello-world]
-                          (. js/document (getElementById "app")))
+(defn display-name [{:keys [first, last] :as contact}]
+  (str last ", " first " " (middle-name contact)))
+
+(defn contacts []
+  [:div 
+   [:h2 "Contact List"]
+   [:ul
+    (map #(with-meta (vector :li (display-name %)) {:key %}) (:contacts @app-state))]])
+
+(reagent/render-component [contacts]
+                          (. js/document (getElementById "contacts")))
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
