@@ -7,10 +7,10 @@
 
 ;; define your app data so that it doesn't get over-written on reload
 
-(defonce app-state (atom {:text "Hello world!"}))
+(defonce app-state (atom {:text "Hello Reagent World!"}))
 
 (defn hello-world []
-  [:h1 (:text @app-state)])
+  [:p (:text @app-state)])
 
 (reagent/render-component [hello-world]
                           (. js/document (getElementById "app")))
