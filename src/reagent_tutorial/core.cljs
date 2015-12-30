@@ -24,7 +24,9 @@
   ;; a map between the symbol :key and a unique item (the list item if it is unique; other suggestions were using `gen-key`
   ;; or using a UUID generator).
   ;; 
-  [:ul (map #(with-meta (vector :li %) {:key %}) (:list @app-state))]
+  [:ul
+   {:className "animals"}
+   (map #(with-meta (vector :li %) {:key %}) (:list @app-state))]
   )
 
 (reagent/render-component [hello-world]
