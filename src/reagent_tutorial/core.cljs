@@ -9,6 +9,9 @@
 
 (defonce app-state (atom {:list ["Lion" "Zebra" "Buffalo" "Antelope"]}))
 
+(defn stripe [text background-color]
+  [:li {:style {:backgroundColor background-color}} text])
+
 (defn hello-world []
   ;; The following code works; however, it generates a warning in the developer console:
   ;;     Every element in a seq should have a unique :key
@@ -26,7 +29,7 @@
   ;; 
   [:ul
    {:className "animals"}
-   (map #(with-meta (vector :li %) {:key %}) (:list @app-state))]
+   (map #(with-meta (stripe %1 %2) {:key %1}) (:list @app-state) (cycle ["#ff0" "#fff"]))]
   )
 
 (reagent/render-component [hello-world]
