@@ -28,12 +28,14 @@
 
 (defn contact [c]
   "Returns the component presenting a single contact."
-  (with-meta (vector :li (display-name c)) {:key c}))
+  (with-meta (vector :li
+                     [:span (display-name c)]
+                     [:button "Delete"]) {:key (:last c)}))
 
 (defn contacts []
   [:div 
    [:h2 "Contact List"]
-   [:ul
+   [:ul 
     (map contact (:contacts @app-state))]])
 
 (rc/render-component [contacts]
