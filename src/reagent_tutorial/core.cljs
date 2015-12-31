@@ -1,5 +1,5 @@
 (ns reagent-tutorial.core
-  (:require [reagent.core :as reagent :refer [atom]]))
+  (:require [reagent.core :as rc :refer [atom]]))
 
 (enable-console-print!)
 
@@ -7,8 +7,8 @@
 
 ;; define your app data so that it doesn't get over-written on reload
 
-(defonce app-state
-  (atom
+(def app-state
+  (rc/atom
    {:contacts 
     [{:first "Ben" :last "Bitdiddle" :email "benb@mit.edu"}
      {:first "Alyssa" :middle-initial "P" :last "Hacker" :email "aphacker@mit.edu"}
@@ -18,22 +18,26 @@
      {:first "Lem" :middle-initial "E" :last "Tweakit" :email "morebugs@mit.edu"}]}))
 
 
-(defn middle-name [contact]
+(defn middle-name [{:keys [middle middle-initial]}]
   (cond 
-    (:middle contact) (:middle contact)
-    (:middle-initial contact) (str (:middle-initial contact) ".")))
+    middle middle
+    middle-initial (str middle-initial ".")))
 
 (defn display-name [{:keys [first, last] :as contact}]
   (str last ", " first " " (middle-name contact)))
+
+(defn contact [c]
+  "Returns the component presenting a single contact."
+  (with-meta (vector :li (display-name c)) {:key c}))
 
 (defn contacts []
   [:div 
    [:h2 "Contact List"]
    [:ul
-    (map #(with-meta (vector :li (display-name %)) {:key %}) (:contacts @app-state))]])
+    (map contact (:contacts @app-state))]])
 
-(reagent/render-component [contacts]
-                          (. js/document (getElementById "contacts")))
+(rc/render-component [contacts]
+                     (. js/document (getElementById "contacts")))
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
