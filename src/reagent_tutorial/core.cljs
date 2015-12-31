@@ -26,11 +26,18 @@
 (defn display-name [{:keys [first, last] :as contact}]
   (str last ", " first " " (middle-name contact)))
 
+(defn remove-contact! [c]
+  (println "Remove contact" c)
+  (swap! app-state update-in [:contacts] (fn [contacts]
+                                           (vec (remove #(= c %) contacts)))))
+
 (defn contact [c]
   "Returns the component presenting a single contact."
   (with-meta (vector :li
                      [:span (display-name c)]
-                     [:button "Delete"]) {:key (:last c)}))
+                     [:button
+                      {:on-click #(remove-contact! c)}
+                      "Delete"]) {:key (:last c)}))
 
 (defn contacts []
   [:div 
